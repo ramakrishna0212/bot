@@ -230,12 +230,16 @@
         });
 
         function addMessage(message, className) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${className}`;
-            messageDiv.textContent = message;
-            document.getElementById('messages').appendChild(messageDiv);
-            scrollToBottom(); // Ensure scrolling to the bottom
-        }
+    setTimeout(() => {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${className}`;
+        messageDiv.textContent = message;
+        document.getElementById('messages').appendChild(messageDiv);
+        scrollToBottom(); // Ensure scrolling to the bottom
+        document.getElementById('user-message').focus(); // Keep the input field focused
+    }, 100); // Delay to allow the keyboard to remain open
+}
+
 
         function scrollToBottom() {
             const chatbox = document.getElementById('chatbox');
@@ -382,6 +386,24 @@
         function saveTasksToLocalStorage(tasks) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
         }
+        function handleUserInput(input) {
+    // Existing input handling logic...
+    
+    // After handling the input, ensure the input field remains focused
+    document.getElementById('user-message').focus();
+}
+
+// Ensure the input field remains focused after sending a message
+document.getElementById('send-button').addEventListener('click', function () {
+    document.getElementById('user-message').focus();
+});
+
+// Ensure the input field remains focused after pressing Enter
+document.getElementById('user-message').addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+        document.getElementById('user-message').focus();
+    }
+});
 
         function getTasksFromLocalStorage() {
             const tasksJson = localStorage.getItem(STORAGE_KEY);
