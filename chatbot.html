@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot - Schedule Maker</title>
     <style>
-         body {
+        body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
@@ -32,13 +32,14 @@
             display: flex;
             flex-direction: column;
             padding: 15px;
+            padding-bottom: 80px; /* Add padding to prevent overlap */
+            box-sizing: border-box;
         }
 
         #messages {
             flex: 1;
             display: flex;
             flex-direction: column;
-            padding: 10px;
             overflow-y: auto;
         }
 
@@ -78,7 +79,6 @@
             border-radius: 20px;
             color: white;
             background-color: #444;
-            height: 100%;
             box-sizing: border-box;
         }
 
@@ -139,12 +139,23 @@
     </div>
 
     <script>
-         let tasks = [];
+        let tasks = [];
         let taskCount = 0;
         let currentTask = 0;
         let isScheduling = false;
         let expectingDate = false;
         let reviewSchedule = [];
+
+        document.getElementById('send-button').addEventListener('click', function () {
+            const userInput = document.getElementById('user-message').value.trim();
+            if (userInput !== '') {
+                addMessage(userInput, 'user-message');
+                document.getElementById('user-message').value = '';
+                setTimeout(() => {
+                    handleUserInput(userInput);
+                }, 500);
+            }
+        });
 
         document.getElementById('user-message').addEventListener('keydown', function (event) {
             if (event.key === 'Enter') {
@@ -169,9 +180,7 @@
 
         function scrollToBottom() {
             const chatbox = document.getElementById('chatbox');
-            requestAnimationFrame(() => {
-                chatbox.scrollTop = chatbox.scrollHeight;
-            });
+            chatbox.scrollTop = chatbox.scrollHeight;
         }
 
         function handleUserInput(input) {
@@ -266,45 +275,48 @@
             });
 
             thead.appendChild(headerRow);
+            table.appendChild(thead);
 
             tasks.forEach((task, index) => {
                 const row = document.createElement('tr');
+
                 const taskCell = document.createElement('td');
+                taskCell.textContent = task.task;
+                row.appendChild(taskCell);
+
                 const dateCell = document.createElement('td');
+                dateCell.textContent = task.date;
+                row.appendChild(dateCell);
+
                 const actionCell = document.createElement('td');
                 const deleteButton = document.createElement('button');
-
-                taskCell.textContent = task.task;
-                dateCell.textContent = task.date;
                 deleteButton.textContent = 'Delete';
                 deleteButton.className = 'delete-button';
                 deleteButton.addEventListener('click', () => {
-                    reviewSchedule.splice(index, 1);
-                    document.querySelector('table').remove();
-                    addTable(reviewSchedule);
+                    tasks.splice(index, 1);
+                    table.remove();
+                    addTable(tasks);
                 });
-
                 actionCell.appendChild(deleteButton);
-                row.appendChild(taskCell);
-                row.appendChild(dateCell);
                 row.appendChild(actionCell);
+
                 tbody.appendChild(row);
             });
 
-            table.appendChild(thead);
             table.appendChild(tbody);
-
             document.getElementById('messages').appendChild(table);
-            table.scrollIntoView({ behavior: 'smooth' });
+            scrollToBottom(); // Ensure scrolling to the bottom
         }
 
         function restartChat() {
-            setTimeout(() => {
-                document.getElementById('messages').innerHTML = '';
-                addMessage('Hello! How can I help you today?', 'bot-message');
-                addMessage('1. Review schedule', 'bot-message');
-                addMessage('2. Create schedule', 'bot-message');
-            }, 500);
+            document.getElementById('messages').innerHTML = '';
+            tasks = [];
+            taskCount = 0;
+            currentTask = 0;
+            isScheduling = false;
+            expectingDate = false;
+            reviewSchedule = [];
+            addMessage('Hello BOSS!', 'bot-message');
         }
     </script>
 </body>
