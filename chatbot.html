@@ -18,6 +18,7 @@
 
         #chat-container {
             width: 400px;
+            height: 600px; /* Set a fixed height for the chat container */
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -27,17 +28,19 @@
 
         #chatbox {
             background-color: #333;
-            padding: 10px;
             flex: 1;
-            overflow-y: auto;
+            overflow-y: auto; /* Enable vertical scrolling for chat content */
             color: white;
             display: flex;
             flex-direction: column;
         }
 
         #messages {
+            flex: 1;
             display: flex;
             flex-direction: column;
+            padding: 10px;
+            overflow-y: auto; /* Ensure overflow scrolling */
         }
 
         .message {
@@ -62,6 +65,9 @@
             background-color: #222;
             padding: 10px;
             border-top: 1px solid #444;
+            width: 100%; /* Full width of its container */
+            height: 60px; /* Fixed height */
+            box-sizing: border-box; /* Include padding in height */
         }
 
         #user-message {
@@ -71,10 +77,18 @@
             border-radius: 5px;
             color: white;
             background-color: #555;
+            height: 100%; /* Full height of the input container */
+            box-sizing: border-box;
         }
 
         #send-button {
-            display: none;
+            background-color: #0084ff; /* Match color theme */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px; /* Space between input and button */
         }
 
         table {
@@ -112,9 +126,7 @@
     <div id="chat-container">
         <div id="chatbox">
             <div id="messages">
-                <div class="message bot-message">Hello! How can I help you today?</div>
-                <div class="message bot-message">1. Review schedule</div>
-                <div class="message bot-message">2. Create schedule</div>
+                <div class="message bot-message">Hello BOSS!</div>
             </div>
         </div>
         <div id="user-input">
@@ -149,6 +161,10 @@
             messageDiv.className = `message ${className}`;
             messageDiv.textContent = message;
             document.getElementById('messages').appendChild(messageDiv);
+            scrollToBottom(); // Ensure scrolling to the bottom
+        }
+
+        function scrollToBottom() {
             const chatbox = document.getElementById('chatbox');
             chatbox.scrollTop = chatbox.scrollHeight;
         }
@@ -220,7 +236,7 @@
                     addMessage('Invalid task number. Please try again.', 'bot-message');
                 }
             } else if (!isScheduling && (input === 'hi' || input === 'hello')) {
-                addMessage('Hello! What can I do for you today?', 'bot-message');
+                addMessage('What are we going to do today?', 'bot-message');
                 addMessage('1. Review schedule', 'bot-message');
                 addMessage('2. Create schedule', 'bot-message');
             } else if (!isScheduling && input !== '1' && input !== '2') {
