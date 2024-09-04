@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatbot - Schedule Maker</title>
+    <title>Bs- Chatbot</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -156,12 +156,21 @@
         .delete-button:hover {
             background-color: #c82333;
         }
+        .more{
+            position: relative;
+    text-align: center;
+    top: 2em;
+
+        }
     </style>
 </head>
 
 <body>
     <div id="chat-container">
         <div id="chatbox">
+            <div class="more">
+                <h1>BS-Chat Task's saver</h1>
+            </div>
             <div id="messages">
                 <div class="message bot-message">Hello..! What are we going to do today?</div>
                 <div class="message bot-message">1.Review schedule</div>
@@ -171,11 +180,11 @@
         <div id="user-input">
             <input type="text" id="user-message" placeholder="Type your choice...">
         </div>
+        
     </div>
     <div id="scroll-down-container">
         <button id="scroll-down-button">BsChat</button>
     </div>
-
     <script>
         const STORAGE_KEY = 'scheduleTasks';
 
