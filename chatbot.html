@@ -6,124 +6,169 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot - Schedule Maker</title>
     <style>
-         body {
-            font-family: Arial, sans-serif;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             height: 100vh;
-            width: 100vw;
-            background-color: #1c1c1c;
-            overflow: hidden; /* Prevent scrolling */
         }
 
-        #chat-container {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            width: 100%;
-            background-color: #2a2a2a;
-            overflow: hidden;
-        }
+        /* Modify the #user-input to be fixed at the bottom */
+#user-input {
+    display: flex;
+    background-color: #fff;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    box-sizing: border-box;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 360px;
+    width: 100%;
+    z-index: 1000;
+}
 
-        #chatbox {
-            flex: 1;
-            overflow-y: auto;
-            background-color: #1e1e1e;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            padding: 15px;
-            padding-bottom: 60px; /* Add padding to prevent overlap with input field */
-            box-sizing: border-box;
-        }
+/* Adjust #chat-container to account for the fixed input */
+#chat-container {
+    display: flex;
+    flex-direction: column;
+    width: 360px;
+    max-width: 100%;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    height: 100vh;
+    max-height: 100vh;
+}
+
+/* Adjust #chatbox to fill the remaining space */
+#chatbox {
+    flex: 1;
+    overflow-y: auto;
+    background-color: #fafafa;
+    padding: 15px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 60px; /* Space for input */
+}
+
 
         #messages {
-            flex: 1;
             display: flex;
             flex-direction: column;
-            overflow-y: auto;
-            position: relative;
         }
 
         .message {
             margin-bottom: 10px;
             padding: 12px;
             border-radius: 15px;
-            font-size: 16px;
+            font-size: 14px;
+            max-width: 80%;
+            line-height: 1.4;
         }
 
         .bot-message {
-            background-color: #3a3a3a;
+            background-color: #e0e0e0;
             align-self: flex-start;
         }
 
         .user-message {
-            background-color: #4a90e2;
-            align-self: flex-end;
+            background-color: #007bff;
             color: white;
+            align-self: flex-end;
         }
 
-        #user-input {
-            display: flex;
-            background-color: #2a2a2a;
-            padding: 10px 15px;
-            border-top: 1px solid #444;
-            box-sizing: border-box;
-            width: 100%;
-            position: fixed;
-            bottom: 0px;
-            z-index: 1000; /* Ensure input field stays above other elements */
-        }
-
+        
         #user-message {
             flex: 1;
-            padding: 12px;
-            border: none;
+            padding: 10px;
+            border: 1px solid #ddd;
             border-radius: 20px;
-            color: white;
-            background-color: #444;
-            box-sizing: border-box;
+            color: #333;
+            background-color: #f4f4f4;
+            font-size: 14px;
+            outline: none;
         }
 
         #send-button {
-            background-color: #4a90e2;
+            background-color: #007bff;
             color: white;
             border: none;
-            padding: 12px 20px;
+            padding: 10px 15px;
             border-radius: 20px;
             cursor: pointer;
+            font-size: 14px;
             margin-left: 10px;
-            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        #send-button:hover {
+            background-color: #0056b3;
+        }
+
+        #scroll-down-container {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            z-index: 100;
+        }
+
+        #scroll-down-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        #scroll-down-button:hover {
+            background-color: #0056b3;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
-            color: white;
+            color: #333;
         }
 
         th, td {
-            border: 1px solid #444;
-            padding: 10px;
+            border: 1px solid #ddd;
+            padding: 8px;
             text-align: left;
+            font-size: 14px;
         }
 
         th {
-            background-color: #3a3a3a;
+            background-color: #f4f4f4;
         }
 
         td {
-            background-color: #2a2a2a;
+            background-color: #fff;
         }
 
         .delete-button {
-            background-color: #d9534f;
+            background-color: #dc3545;
             color: white;
             border: none;
             padding: 5px 10px;
-            border-radius: 10px;
+            border-radius: 5px;
             cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s;
+        }
+
+        .delete-button:hover {
+            background-color: #c82333;
         }
     </style>
 </head>
@@ -328,6 +373,11 @@
             document.getElementById('messages').appendChild(table);
             scrollToBottom(); // Ensure scrolling to the bottom
         }
+        document.getElementById('user-message').addEventListener('focus', function () {
+    setTimeout(() => {
+        scrollToBottom();
+    }, 300); // Delay to ensure the keyboard is fully open
+});
 
         function saveTasksToLocalStorage(tasks) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
