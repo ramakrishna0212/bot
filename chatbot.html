@@ -164,7 +164,9 @@
     <div id="chat-container">
         <div id="chatbox">
             <div id="messages">
-                <div class="message bot-message">Hello BOSS!</div>
+                <div class="message bot-message">Hello..! What are we going to do today?</div>
+                <div class="message bot-message">1.Review schedule</div>
+                <div class="message bot-message">2. Create schedule</div>
             </div>
         </div>
         <div id="user-input">
@@ -177,6 +179,8 @@
     </div>
 
     <script>
+        const STORAGE_KEY = 'scheduleTasks';
+
         let tasks = [];
         let taskCount = 0;
         let currentTask = 0;
@@ -230,6 +234,7 @@
 
             if (!isScheduling && (input === '1' || input === '2')) {
                 if (input === '1') {
+                    reviewSchedule = getTasksFromLocalStorage();
                     if (reviewSchedule.length === 0) {
                         addMessage('Your schedule is empty.', 'bot-message');
                     } else {
@@ -271,21 +276,26 @@
                 if (tasks.length === 0) {
                     addMessage('Your schedule is empty. No tasks to save.', 'bot-message');
                 } else {
-                    reviewSchedule = [...tasks];
+                    saveTasksToLocalStorage(tasks);
+                    reviewSchedule = getTasksFromLocalStorage();
                     addMessage('Your tasks have been added to the review schedule!', 'bot-message');
                     tasks = [];
                     taskCount = 0;
                     currentTask = 0;
-                    addMessage('Enter "new" to clear the chat and start over.', 'bot-message');
+                    addMessage('Enter "1" to review your schedule or "2" to create a new schedule.', 'bot-message');
                 }
             } else if (!isScheduling && input === 'no') {
-                addMessage('Enter "new" to clear the chat and start over.', 'bot-message');
+                tasks = [];
+                taskCount = 0;
+                currentTask = 0;
+                addMessage('Tasks not saved. You can start over. Enter "2" to create a new schedule.', 'bot-message');
             } else if (!isScheduling && input === 'new') {
                 restartChat();
             } else if (!isScheduling && input.startsWith('delete')) {
                 const index = parseInt(input.split(' ')[1], 10) - 1;
                 if (index >= 0 && index < reviewSchedule.length) {
                     reviewSchedule.splice(index, 1);
+                    saveTasksToLocalStorage(reviewSchedule);
                     document.querySelector('table').remove();
                     addTable(reviewSchedule);
                 } else {
@@ -336,7 +346,8 @@
                 deleteButton.className = 'delete-button';
                 deleteButton.addEventListener('click', () => {
                     tasks.splice(index, 1);
-                    table.remove();
+                    saveTasksToLocalStorage(tasks);
+                    document.querySelector('table').remove();
                     addTable(tasks);
                 });
                 actionCell.appendChild(deleteButton);
@@ -348,6 +359,15 @@
             table.appendChild(tbody);
             document.getElementById('messages').appendChild(table);
             scrollToBottom(); // Ensure scrolling to the bottom
+        }
+
+        function saveTasksToLocalStorage(tasks) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+        }
+
+        function getTasksFromLocalStorage() {
+            const tasksJson = localStorage.getItem(STORAGE_KEY);
+            return tasksJson ? JSON.parse(tasksJson) : [];
         }
 
         function restartChat() {
