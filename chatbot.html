@@ -6,156 +6,124 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot - Schedule Maker</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+         body {
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             height: 100vh;
+            width: 100vw;
+            background-color: #1c1c1c;
+            overflow: hidden; /* Prevent scrolling */
         }
 
         #chat-container {
             display: flex;
             flex-direction: column;
-            width: 360px;
-            max-width: 100%;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            height: 100%;
+            width: 100%;
+            background-color: #2a2a2a;
             overflow: hidden;
-            height: 80vh;
-            max-height: 600px;
         }
 
         #chatbox {
             flex: 1;
             overflow-y: auto;
-            background-color: #fafafa;
+            background-color: #1e1e1e;
+            color: white;
+            display: flex;
+            flex-direction: column;
             padding: 15px;
+            padding-bottom: 60px; /* Add padding to prevent overlap with input field */
             box-sizing: border-box;
-            border-bottom: 1px solid #ddd;
         }
 
         #messages {
+            flex: 1;
             display: flex;
             flex-direction: column;
+            overflow-y: auto;
+            position: relative;
         }
 
         .message {
             margin-bottom: 10px;
             padding: 12px;
             border-radius: 15px;
-            font-size: 14px;
-            max-width: 80%;
-            line-height: 1.4;
+            font-size: 16px;
         }
 
         .bot-message {
-            background-color: #e0e0e0;
+            background-color: #3a3a3a;
             align-self: flex-start;
         }
 
         .user-message {
-            background-color: #007bff;
-            color: white;
+            background-color: #4a90e2;
             align-self: flex-end;
+            color: white;
         }
 
         #user-input {
             display: flex;
-            background-color: #fff;
-            padding: 10px;
-            border-top: 1px solid #ddd;
+            background-color: #2a2a2a;
+            padding: 10px 15px;
+            border-top: 1px solid #444;
             box-sizing: border-box;
+            width: 100%;
+            position: fixed;
+            bottom: 0px;
+            z-index: 1000; /* Ensure input field stays above other elements */
         }
 
         #user-message {
             flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
+            padding: 12px;
+            border: none;
             border-radius: 20px;
-            color: #333;
-            background-color: #f4f4f4;
-            font-size: 14px;
-            outline: none;
+            color: white;
+            background-color: #444;
+            box-sizing: border-box;
         }
 
         #send-button {
-            background-color: #007bff;
+            background-color: #4a90e2;
             color: white;
             border: none;
-            padding: 10px 15px;
+            padding: 12px 20px;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 14px;
             margin-left: 10px;
-            transition: background-color 0.3s;
-        }
-
-        #send-button:hover {
-            background-color: #0056b3;
-        }
-
-        #scroll-down-container {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            z-index: 100;
-        }
-
-        #scroll-down-button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s;
-        }
-
-        #scroll-down-button:hover {
-            background-color: #0056b3;
+            font-size: 16px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
-            color: #333;
+            color: white;
         }
 
         th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
+            border: 1px solid #444;
+            padding: 10px;
             text-align: left;
-            font-size: 14px;
         }
 
         th {
-            background-color: #f4f4f4;
+            background-color: #3a3a3a;
         }
 
         td {
-            background-color: #fff;
+            background-color: #2a2a2a;
         }
 
         .delete-button {
-            background-color: #dc3545;
+            background-color: #d9534f;
             color: white;
             border: none;
             padding: 5px 10px;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 12px;
-            transition: background-color 0.3s;
-        }
-
-        .delete-button:hover {
-            background-color: #c82333;
         }
     </style>
 </head>
