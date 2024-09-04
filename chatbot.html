@@ -123,7 +123,10 @@
             border-collapse: collapse;
             margin-top: 10px;
             color: #333;
+            bottom: 11px;
+            position: relative;
         }
+
 
         th,
         td {
@@ -155,11 +158,11 @@
         .delete-button:hover {
             background-color: #c82333;
         }
-        .more{
-            position: relative;
-    text-align: center;
-    top: 8em;
 
+        .more {
+            position: relative;
+            text-align: center;
+            top: 8em;
         }
     </style>
 </head>
@@ -168,22 +171,22 @@
     <div id="chat-container">
         <div id="chatbox">
             <div class="more">
-                <h1>BS-Chat Task's saver</h1>
+                <h1>BS-Chat Task's Saver</h1>
             </div>
             <div id="messages">
                 <div class="message bot-message">Hello..! What are we going to do today?</div>
-                <div class="message bot-message">1.Review schedule</div>
+                <div class="message bot-message">1. Review schedule</div>
                 <div class="message bot-message">2. Create schedule</div>
             </div>
         </div>
         <div id="user-input">
             <input type="text" id="user-message" placeholder="Type your choice...">
         </div>
-        
     </div>
     <div id="scroll-down-container">
         <button id="scroll-down-button">BsChat</button>
     </div>
+
     <script>
         const STORAGE_KEY = 'scheduleTasks';
 
@@ -297,7 +300,7 @@
             const tbody = document.createElement('tbody');
             const headerRow = document.createElement('tr');
 
-            const headers = ['Task', 'Date'];
+            const headers = ['Task', 'Date', 'Action'];
             headers.forEach(headerText => {
                 const th = document.createElement('th');
                 th.textContent = headerText;
@@ -307,15 +310,26 @@
             thead.appendChild(headerRow);
             table.appendChild(thead);
 
-            tasks.forEach(task => {
+            tasks.forEach((task, index) => {
                 const row = document.createElement('tr');
                 const taskCell = document.createElement('td');
                 taskCell.textContent = task.task;
                 const dateCell = document.createElement('td');
                 dateCell.textContent = task.date;
 
+                // Create delete button
+                const actionCell = document.createElement('td');
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.className = 'delete-button';
+                deleteButton.onclick = function () {
+                    deleteTask(index);
+                };
+
+                actionCell.appendChild(deleteButton);
                 row.appendChild(taskCell);
                 row.appendChild(dateCell);
+                row.appendChild(actionCell);
                 tbody.appendChild(row);
             });
 
@@ -323,10 +337,26 @@
             document.getElementById('messages').appendChild(table);
         }
 
+        function deleteTask(index) {
+            let tasks = getTasksFromLocalStorage();
+            tasks.splice(index, 1); // Remove task from array
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks)); // Update local storage
+
+            // Re-display the updated schedule
+            reviewSchedule = getTasksFromLocalStorage();
+            document.getElementById('messages').innerHTML = ''; // Clear current messages
+            if (reviewSchedule.length === 0) {
+                addMessage('Your schedule is empty.', 'bot-message');
+            } else {
+                addMessage('Here are your updated tasks:', 'bot-message');
+                addTable(reviewSchedule);
+            }
+        }
+
         function restartChat() {
             document.getElementById('messages').innerHTML = '';
             addMessage('Hello..! What are we going to do today?', 'bot-message');
-            addMessage('1.Review schedule', 'bot-message');
+            addMessage('1. Review schedule', 'bot-message');
             addMessage('2. Create schedule', 'bot-message');
         }
 
