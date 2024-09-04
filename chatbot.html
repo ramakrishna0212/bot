@@ -1,104 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Chatbot</title>
+    <title>Chatbot - Schedule Maker</title>
     <style>
-        body {
+         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
-            background-color: #f4f4f4;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            background-color: #1c1c1c;
+            overflow: hidden; /* Prevent scrolling */
         }
 
         #chat-container {
-            width: 400px;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+            background-color: #2a2a2a;
         }
 
         #chatbox {
-            background-color: #333;
-            padding: 10px;
-            height: 400px;
-            overflow-y: scroll;
+            flex: 1;
+            overflow-y: auto;
+            background-color: #1e1e1e;
             color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
         }
 
         #messages {
+            flex: 1;
             display: flex;
             flex-direction: column;
+            padding: 10px;
+            overflow-y: auto;
         }
 
         .message {
             margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 12px;
+            border-radius: 15px;
+            font-size: 16px;
         }
 
         .bot-message {
-            background-color: #444;
+            background-color: #3a3a3a;
             align-self: flex-start;
         }
 
         .user-message {
-            background-color: #0084ff;
+            background-color: #4a90e2;
             align-self: flex-end;
             color: white;
         }
 
         #user-input {
             display: flex;
-            background-color: #222;
-            padding: 10px;
+            background-color: #2a2a2a;
+            padding: 10px 15px;
+            border-top: 1px solid #444;
+            box-sizing: border-box;
+            width: 100%;
         }
 
         #user-message {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             border: none;
-            border-radius: 5px;
+            border-radius: 20px;
+            color: white;
+            background-color: #444;
+            height: 100%;
+            box-sizing: border-box;
         }
 
         #send-button {
-            display: none;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 16px;
+            position: fixed;
+            bottom: 0px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            color: white;
+        }
+
+        th, td {
+            border: 1px solid #444;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #3a3a3a;
+        }
+
+        td {
+            background-color: #2a2a2a;
+        }
+
+        .delete-button {
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 10px;
+            cursor: pointer;
         }
     </style>
 </head>
+
 <body>
     <div id="chat-container">
         <div id="chatbox">
             <div id="messages">
-                <div class="message bot-message">Hello! How can I help you today?</div>
-                <div class="message bot-message">1.Review sed</div>
-                <div class="message bot-message">2.Create sed</div>
+                <div class="message bot-message">Hello BOSS!</div>
             </div>
         </div>
         <div id="user-input">
-            <input type="text" id="user-message" placeholder="Type a message...">
+            <input type="text" id="user-message" placeholder="Type your choice...">
             <button id="send-button">Send</button>
         </div>
     </div>
 
     <script>
-        document.getElementById('user-message').addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                const userInput = document.getElementById('user-message').value;
+         let tasks = [];
+        let taskCount = 0;
+        let currentTask = 0;
+        let isScheduling = false;
+        let expectingDate = false;
+        let reviewSchedule = [];
 
-                if (userInput.trim() !== '') {
+        document.getElementById('user-message').addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                const userInput = document.getElementById('user-message').value.trim();
+                if (userInput !== '') {
                     addMessage(userInput, 'user-message');
                     document.getElementById('user-message').value = '';
-
-                    // Simulate a bot response
                     setTimeout(() => {
-                        const botResponse = getBotResponse(userInput);
-                        addMessage(botResponse, 'bot-message');
-                    }, 1000);
+                        handleUserInput(userInput);
+                    }, 500);
                 }
             }
         });
@@ -108,30 +164,149 @@
             messageDiv.className = `message ${className}`;
             messageDiv.textContent = message;
             document.getElementById('messages').appendChild(messageDiv);
-            messageDiv.scrollIntoView({ behavior: 'smooth' });
+            scrollToBottom(); // Ensure scrolling to the bottom
         }
 
-        function getBotResponse(input) {
-            // Basic keyword matching for responses
+        function scrollToBottom() {
+            const chatbox = document.getElementById('chatbox');
+            requestAnimationFrame(() => {
+                chatbox.scrollTop = chatbox.scrollHeight;
+            });
+        }
+
+        function handleUserInput(input) {
             input = input.toLowerCase();
-            let response = '';
 
-            if (input.includes('hello')) {
-                response = 'Hi there! How can I assist you today?';
-            } else if (input.includes('how are you')) {
-                response = 'I\'m just a bot, but I\'m here to help!';
-            } else if (input.includes('bye')) {
-                response = 'Goodbye! Have a great day!';
-            } else if (input.includes('your name')) {
-                response = 'I\'m your friendly chatbot!';
-            } else if (input.includes('what can you do')) {
-                response = 'I can chat with you and answer basic questions!';
+            if (!isScheduling && (input === '1' || input === '2')) {
+                if (input === '1') {
+                    if (reviewSchedule.length === 0) {
+                        addMessage('Your schedule is empty.', 'bot-message');
+                    } else {
+                        addMessage('Here are your saved tasks:', 'bot-message');
+                        addTable(reviewSchedule);
+                    }
+                    addMessage('Enter "new" to clear the chat and start over.', 'bot-message');
+                } else if (input === '2') {
+                    addMessage('How many tasks would you like to save? (Max 10)', 'bot-message');
+                    isScheduling = true;
+                }
+            } else if (isScheduling && taskCount === 0) {
+                taskCount = parseInt(input);
+                if (isNaN(taskCount) || taskCount <= 0 || taskCount > 10) {
+                    addMessage('Please enter a valid number of tasks (1-10).', 'bot-message');
+                    taskCount = 0;
+                } else {
+                    addMessage('Please enter the task description for task 1.', 'bot-message');
+                    currentTask = 1;
+                    expectingDate = false;
+                }
+            } else if (isScheduling && !expectingDate) {
+                tasks.push({ task: input, date: '' });
+                addMessage(`Please enter the date for task ${currentTask}. (Format: YYYY-MM-DD)`, 'bot-message');
+                expectingDate = true;
+            } else if (isScheduling && expectingDate) {
+                const lastTask = tasks[tasks.length - 1];
+                lastTask.date = input;
+                if (currentTask < taskCount) {
+                    currentTask++;
+                    addMessage(`Please enter the description for task ${currentTask}.`, 'bot-message');
+                    expectingDate = false;
+                } else {
+                    addMessage('All tasks have been entered. Would you like to save them? (yes/no)', 'bot-message');
+                    isScheduling = false;
+                    expectingDate = false;
+                }
+            } else if (!isScheduling && input === 'yes') {
+                if (tasks.length === 0) {
+                    addMessage('Your schedule is empty. No tasks to save.', 'bot-message');
+                } else {
+                    reviewSchedule = [...tasks];
+                    addMessage('Your tasks have been added to the review schedule!', 'bot-message');
+                    tasks = [];
+                    taskCount = 0;
+                    currentTask = 0;
+                    addMessage('Enter "new" to clear the chat and start over.', 'bot-message');
+                }
+            } else if (!isScheduling && input === 'no') {
+                addMessage('Enter "new" to clear the chat and start over.', 'bot-message');
+            } else if (!isScheduling && input === 'new') {
+                restartChat();
+            } else if (!isScheduling && input.startsWith('delete')) {
+                const index = parseInt(input.split(' ')[1], 10) - 1;
+                if (index >= 0 && index < reviewSchedule.length) {
+                    reviewSchedule.splice(index, 1);
+                    document.querySelector('table').remove();
+                    addTable(reviewSchedule);
+                } else {
+                    addMessage('Invalid task number. Please try again.', 'bot-message');
+                }
+            } else if (!isScheduling && (input === 'hi' || input === 'hello')) {
+                addMessage('What are we going to do today?', 'bot-message');
+                addMessage('1. Review schedule', 'bot-message');
+                addMessage('2. Create schedule', 'bot-message');
+            } else if (!isScheduling && input !== '1' && input !== '2') {
+                addMessage('You have only 2 options: 1. Review schedule or 2. Create schedule.', 'bot-message');
             } else {
-                response = 'I\'m not sure how to respond to that. Could you ask something else?';
+                addMessage('Invalid input. Please follow the instructions.', 'bot-message');
             }
+        }
 
-            return response;
+        function addTable(tasks) {
+            const table = document.createElement('table');
+            const thead = document.createElement('thead');
+            const tbody = document.createElement('tbody');
+
+            const headerRow = document.createElement('tr');
+            const headers = ['Task', 'Date', 'Action'];
+
+            headers.forEach(headerText => {
+                const th = document.createElement('th');
+                th.textContent = headerText;
+                headerRow.appendChild(th);
+            });
+
+            thead.appendChild(headerRow);
+
+            tasks.forEach((task, index) => {
+                const row = document.createElement('tr');
+                const taskCell = document.createElement('td');
+                const dateCell = document.createElement('td');
+                const actionCell = document.createElement('td');
+                const deleteButton = document.createElement('button');
+
+                taskCell.textContent = task.task;
+                dateCell.textContent = task.date;
+                deleteButton.textContent = 'Delete';
+                deleteButton.className = 'delete-button';
+                deleteButton.addEventListener('click', () => {
+                    reviewSchedule.splice(index, 1);
+                    document.querySelector('table').remove();
+                    addTable(reviewSchedule);
+                });
+
+                actionCell.appendChild(deleteButton);
+                row.appendChild(taskCell);
+                row.appendChild(dateCell);
+                row.appendChild(actionCell);
+                tbody.appendChild(row);
+            });
+
+            table.appendChild(thead);
+            table.appendChild(tbody);
+
+            document.getElementById('messages').appendChild(table);
+            table.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function restartChat() {
+            setTimeout(() => {
+                document.getElementById('messages').innerHTML = '';
+                addMessage('Hello! How can I help you today?', 'bot-message');
+                addMessage('1. Review schedule', 'bot-message');
+                addMessage('2. Create schedule', 'bot-message');
+            }, 500);
         }
     </script>
 </body>
+
 </html>
