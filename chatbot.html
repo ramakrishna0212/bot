@@ -18,6 +18,160 @@
             height: 100vh;
         }
 
+        /* Adjust #chat-container to fill most of the laptop screen */
+        #chat-container {
+            display: flex;
+            flex-direction: column;
+            width: 80vw; /* 80% of the viewport width */
+            max-width: 100%;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            height: 85vh; /* 85% of the viewport height */
+            max-height: 85vh;
+        }
+
+        /* Modify the #user-input to be fixed at the bottom */
+        #user-input {
+            display: flex;
+            background-color: #fff;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            box-sizing: border-box;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 80vw;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        /* Adjust #chatbox to fill the remaining space */
+        #chatbox {
+            flex: 1;
+            overflow-y: auto;
+            background-color: #fafafa;
+            padding: 15px;
+            box-sizing: border-box;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 60px; /* Space for input */
+        }
+
+        #messages {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 12px;
+            border-radius: 15px;
+            font-size: 14px;
+            max-width: 80%;
+            line-height: 1.4;
+        }
+
+        .bot-message {
+            background-color: #e0e0e0;
+            align-self: flex-start;
+        }
+
+        .user-message {
+            background-color: #007bff;
+            color: white;
+            align-self: flex-end;
+        }
+
+        #user-message {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            color: #333;
+            background-color: #f4f4f4;
+            font-size: 14px;
+            outline: none;
+        }
+
+        #scroll-down-container {
+            position: fixed;
+            top: 10px;
+            text-align: center;
+            z-index: 100;
+        }
+
+        #scroll-down-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 4px 13px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        #scroll-down-button:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            color: #333;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        td {
+            background-color: #fff;
+        }
+
+        .delete-button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s;
+        }
+
+        .delete-button:hover {
+            background-color: #c82333;
+        }
+
+        .more {
+            text-align: center;
+            margin-top: 2em;
+        }
+         @media (max-width: 480px) {
+            body {
+                display: block;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
         /* Modify the #user-input to be fixed at the bottom */
         #user-input {
             display: flex;
@@ -165,6 +319,7 @@
             text-align: center;
             top: 8em;
         }
+    }
     </style>
 </head>
 
@@ -177,12 +332,12 @@
             </div>
             <div id="messages">
                 <div class="message bot-message">Hello..! What are we going to do today?</div>
-                <div class="message bot-message">1. Review schedule</div>
-                <div class="message bot-message">2. Create schedule</div>
+                <div class="message bot-message">1. Review task</div>
+                <div class="message bot-message">2. Create task</div>
             </div>
         </div>
         <div id="user-input">
-            <input type="text" id="user-message" placeholder="Type your choice...">
+            <input type="text" id="user-message" placeholder="Enter the task here......">
         </div>
     </div>
     <div id="scroll-down-container">
@@ -274,21 +429,21 @@
                 }
             } else if (!isScheduling && input === 'yes') {
                 if (tasks.length === 0) {
-                    addMessage('Your schedule is empty. No tasks to save.', 'bot-message');
+                    addMessage('Review task is empty now.', 'bot-message');
                 } else {
                     saveTasksToLocalStorage(tasks);
                     reviewSchedule = getTasksFromLocalStorage();
-                    addMessage('Your tasks have been added to the review schedule!', 'bot-message');
+                    addMessage('Your tasks have been added to the review tasks!', 'bot-message');
                     tasks = [];
                     taskCount = 0;
                     currentTask = 0;
-                    addMessage('Enter 1 to review, 2 to create a schedule.', 'bot-message');
+                    addMessage('Enter 1 to review, 2 to create a task.', 'bot-message');
                 }
             } else if (!isScheduling && input === 'no') {
                 tasks = [];
                 taskCount = 0;
                 currentTask = 0;
-                addMessage('Tasks not saved. You can start over. Enter "2" to create a new schedule.', 'bot-message');
+                addMessage('Tasks not saved. You can start over. Enter "2" to create a new tasks.', 'bot-message');
             } else if (!isScheduling && input === 'new') {
                 restartChat();
             } else {
@@ -358,8 +513,8 @@
         function restartChat() {
             document.getElementById('messages').innerHTML = '';
             addMessage('Hello..! What are we going to do today?', 'bot-message');
-            addMessage('1. Review schedule', 'bot-message');
-            addMessage('2. Create schedule', 'bot-message');
+            addMessage('1. Review task', 'bot-message');
+            addMessage('2. Create task', 'bot-message');
         }
 
         function saveTasksToLocalStorage(tasks) {
