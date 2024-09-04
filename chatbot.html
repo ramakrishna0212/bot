@@ -18,46 +18,45 @@
         }
 
         /* Modify the #user-input to be fixed at the bottom */
-#user-input {
-    display: flex;
-    background-color: #fff;
-    padding: 10px;
-    border-top: 1px solid #ddd;
-    box-sizing: border-box;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    max-width: 360px;
-    width: 100%;
-    z-index: 1000;
-}
+        #user-input {
+            display: flex;
+            background-color: #fff;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            box-sizing: border-box;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 360px;
+            width: 100%;
+            z-index: 1000;
+        }
 
-/* Adjust #chat-container to account for the fixed input */
-#chat-container {
-    display: flex;
-    flex-direction: column;
-    width: 360px;
-    max-width: 100%;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    height: 100vh;
-    max-height: 100vh;
-}
+        /* Adjust #chat-container to account for the fixed input */
+        #chat-container {
+            display: flex;
+            flex-direction: column;
+            width: 360px;
+            max-width: 100%;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            height: 100vh;
+            max-height: 100vh;
+        }
 
-/* Adjust #chatbox to fill the remaining space */
-#chatbox {
-    flex: 1;
-    overflow-y: auto;
-    background-color: #fafafa;
-    padding: 15px;
-    box-sizing: border-box;
-    border-bottom: 1px solid #ddd;
-    margin-bottom: 60px; /* Space for input */
-}
-
+        /* Adjust #chatbox to fill the remaining space */
+        #chatbox {
+            flex: 1;
+            overflow-y: auto;
+            background-color: #fafafa;
+            padding: 15px;
+            box-sizing: border-box;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 60px; /* Space for input */
+        }
 
         #messages {
             display: flex;
@@ -84,7 +83,6 @@
             align-self: flex-end;
         }
 
-        
         #user-message {
             flex: 1;
             padding: 10px;
@@ -94,22 +92,6 @@
             background-color: #f4f4f4;
             font-size: 14px;
             outline: none;
-        }
-
-        #send-button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-left: 10px;
-            transition: background-color 0.3s;
-        }
-
-        #send-button:hover {
-            background-color: #0056b3;
         }
 
         #scroll-down-container {
@@ -141,7 +123,8 @@
             color: #333;
         }
 
-        th, td {
+        th,
+        td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
@@ -184,7 +167,6 @@
         </div>
         <div id="user-input">
             <input type="text" id="user-message" placeholder="Type your choice...">
-            <button id="send-button">Send</button>
         </div>
     </div>
     <div id="scroll-down-container">
@@ -200,17 +182,6 @@
         let isScheduling = false;
         let expectingDate = false;
         let reviewSchedule = [];
-
-        document.getElementById('send-button').addEventListener('click', function () {
-            const userInput = document.getElementById('user-message').value.trim();
-            if (userInput !== '') {
-                addMessage(userInput, 'user-message');
-                document.getElementById('user-message').value = '';
-                setTimeout(() => {
-                    handleUserInput(userInput);
-                }, 500);
-            }
-        });
 
         document.getElementById('user-message').addEventListener('keydown', function (event) {
             if (event.key === 'Enter') {
@@ -304,24 +275,8 @@
                 addMessage('Tasks not saved. You can start over. Enter "2" to create a new schedule.', 'bot-message');
             } else if (!isScheduling && input === 'new') {
                 restartChat();
-            } else if (!isScheduling && input.startsWith('delete')) {
-                const index = parseInt(input.split(' ')[1], 10) - 1;
-                if (index >= 0 && index < reviewSchedule.length) {
-                    reviewSchedule.splice(index, 1);
-                    saveTasksToLocalStorage(reviewSchedule);
-                    document.querySelector('table').remove();
-                    addTable(reviewSchedule);
-                } else {
-                    addMessage('Invalid task number. Please try again.', 'bot-message');
-                }
-            } else if (!isScheduling && (input === 'hi' || input === 'hello')) {
-                addMessage('What are we going to do today?', 'bot-message');
-                addMessage('1. Review schedule', 'bot-message');
-                addMessage('2. Create schedule', 'bot-message');
-            } else if (!isScheduling && input !== '1' && input !== '2') {
-                addMessage('You have only 2 options: 1. Review schedule or 2. Create schedule.', 'bot-message');
             } else {
-                addMessage('Invalid input. Please follow the instructions.', 'bot-message');
+                addMessage('Please enter a valid input.', 'bot-message');
             }
         }
 
@@ -329,10 +284,9 @@
             const table = document.createElement('table');
             const thead = document.createElement('thead');
             const tbody = document.createElement('tbody');
-
             const headerRow = document.createElement('tr');
-            const headers = ['Task', 'Date', 'Action'];
 
+            const headers = ['Task', 'Date'];
             headers.forEach(headerText => {
                 const th = document.createElement('th');
                 th.textContent = headerText;
@@ -342,61 +296,38 @@
             thead.appendChild(headerRow);
             table.appendChild(thead);
 
-            tasks.forEach((task, index) => {
+            tasks.forEach(task => {
                 const row = document.createElement('tr');
-
                 const taskCell = document.createElement('td');
                 taskCell.textContent = task.task;
-                row.appendChild(taskCell);
-
                 const dateCell = document.createElement('td');
                 dateCell.textContent = task.date;
+
+                row.appendChild(taskCell);
                 row.appendChild(dateCell);
-
-                const actionCell = document.createElement('td');
-                const deleteButton = document.createElement('button');
-                deleteButton.textContent = 'Delete';
-                deleteButton.className = 'delete-button';
-                deleteButton.addEventListener('click', () => {
-                    tasks.splice(index, 1);
-                    saveTasksToLocalStorage(tasks);
-                    document.querySelector('table').remove();
-                    addTable(tasks);
-                });
-                actionCell.appendChild(deleteButton);
-                row.appendChild(actionCell);
-
                 tbody.appendChild(row);
             });
 
             table.appendChild(tbody);
             document.getElementById('messages').appendChild(table);
-            scrollToBottom(); // Ensure scrolling to the bottom
-        }
-        document.getElementById('user-message').addEventListener('focus', function () {
-    setTimeout(() => {
-        scrollToBottom();
-    }, 300); // Delay to ensure the keyboard is fully open
-});
-
-        function saveTasksToLocalStorage(tasks) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-        }
-
-        function getTasksFromLocalStorage() {
-            const tasksJson = localStorage.getItem(STORAGE_KEY);
-            return tasksJson ? JSON.parse(tasksJson) : [];
         }
 
         function restartChat() {
             document.getElementById('messages').innerHTML = '';
-            tasks = [];
-            taskCount = 0;
-            currentTask = 0;
-            isScheduling = false;
-            expectingDate = false;
-            reviewSchedule = [];
-            addMessage('Hello BOSS!', 'bot-message');
+            addMessage('Hello..! What are we going to do today?', 'bot-message');
+            addMessage('1.Review schedule', 'bot-message');
+            addMessage('2. Create schedule', 'bot-message');
+        }
+
+        function saveTasksToLocalStorage(tasks) {
+            const existingTasks = getTasksFromLocalStorage();
+            const combinedTasks = existingTasks.concat(tasks);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(combinedTasks));
+        }
+
+        function getTasksFromLocalStorage() {
+            const tasks = localStorage.getItem(STORAGE_KEY);
+            return tasks ? JSON.parse(tasks) : [];
         }
     </script>
 </body>
