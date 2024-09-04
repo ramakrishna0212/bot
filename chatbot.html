@@ -249,23 +249,23 @@
             } else if (isScheduling && taskCount === 0) {
                 taskCount = parseInt(input);
                 if (isNaN(taskCount) || taskCount <= 0 || taskCount > 10) {
-                    addMessage('Please enter a valid number of tasks (1-10).', 'bot-message');
+                    addMessage('Enter a valid number of tasks (1-10).', 'bot-message');
                     taskCount = 0;
                 } else {
-                    addMessage('Please enter the task description for task 1.', 'bot-message');
+                    addMessage('Enter the task description for task.', 'bot-message');
                     currentTask = 1;
                     expectingDate = false;
                 }
             } else if (isScheduling && !expectingDate) {
                 tasks.push({ task: input, date: '' });
-                addMessage(`Please enter the date for task ${currentTask}. (Format: YYYY-MM-DD)`, 'bot-message');
+                addMessage(`Enter the date for task ${currentTask}. (Format: YYYY-MM-DD)`, 'bot-message');
                 expectingDate = true;
             } else if (isScheduling && expectingDate) {
                 const lastTask = tasks[tasks.length - 1];
                 lastTask.date = input;
                 if (currentTask < taskCount) {
                     currentTask++;
-                    addMessage(`Please enter the description for task ${currentTask}.`, 'bot-message');
+                    addMessage(`Enter the description for task ${currentTask}.`, 'bot-message');
                     expectingDate = false;
                 } else {
                     addMessage('All tasks have been entered. Would you like to save them? (yes/no)', 'bot-message');
@@ -282,7 +282,7 @@
                     tasks = [];
                     taskCount = 0;
                     currentTask = 0;
-                    addMessage('Enter "1" to review your schedule or "2" to create a new schedule.', 'bot-message');
+                    addMessage('Enter 1 to review, 2 to create a schedule.', 'bot-message');
                 }
             } else if (!isScheduling && input === 'no') {
                 tasks = [];
@@ -292,7 +292,7 @@
             } else if (!isScheduling && input === 'new') {
                 restartChat();
             } else {
-                addMessage('Please enter a valid input.', 'bot-message');
+                addMessage('Enter a valid input.', 'bot-message');
             }
         }
 
