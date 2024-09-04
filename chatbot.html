@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        #chat-container {
+            width: 400px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #chatbox {
+            background-color: #333;
+            padding: 10px;
+            height: 400px;
+            overflow-y: scroll;
+            color: white;
+        }
+
+        #messages {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .bot-message {
+            background-color: #444;
+            align-self: flex-start;
+        }
+
+        .user-message {
+            background-color: #0084ff;
+            align-self: flex-end;
+            color: white;
+        }
+
+        #user-input {
+            display: flex;
+            background-color: #222;
+            padding: 10px;
+        }
+
+        #user-message {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        #send-button {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="chatbox">
+            <div id="messages">
+                <div class="message bot-message">Hello! How can I help you today?</div>
+                <div class="message bot-message">1.Review sed</div>
+                <div class="message bot-message">2.Create sed</div>
+            </div>
+        </div>
+        <div id="user-input">
+            <input type="text" id="user-message" placeholder="Type a message...">
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('user-message').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const userInput = document.getElementById('user-message').value;
+
+                if (userInput.trim() !== '') {
+                    addMessage(userInput, 'user-message');
+                    document.getElementById('user-message').value = '';
+
+                    // Simulate a bot response
+                    setTimeout(() => {
+                        const botResponse = getBotResponse(userInput);
+                        addMessage(botResponse, 'bot-message');
+                    }, 1000);
+                }
+            }
+        });
+
+        function addMessage(message, className) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${className}`;
+            messageDiv.textContent = message;
+            document.getElementById('messages').appendChild(messageDiv);
+            messageDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function getBotResponse(input) {
+            // Basic keyword matching for responses
+            input = input.toLowerCase();
+            let response = '';
+
+            if (input.includes('hello')) {
+                response = 'Hi there! How can I assist you today?';
+            } else if (input.includes('how are you')) {
+                response = 'I\'m just a bot, but I\'m here to help!';
+            } else if (input.includes('bye')) {
+                response = 'Goodbye! Have a great day!';
+            } else if (input.includes('your name')) {
+                response = 'I\'m your friendly chatbot!';
+            } else if (input.includes('what can you do')) {
+                response = 'I can chat with you and answer basic questions!';
+            } else {
+                response = 'I\'m not sure how to respond to that. Could you ask something else?';
+            }
+
+            return response;
+        }
+    </script>
+</body>
+</html>
